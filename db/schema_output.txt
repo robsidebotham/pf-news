@@ -1,0 +1,57 @@
+                         Table "public.topics"
+   Column    |          Type          | Collation | Nullable | Default 
+-------------+------------------------+-----------+----------+---------
+ slug        | character varying(255) |           | not null | 
+ description | character varying(255) |           |          | 
+Indexes:
+    "topics_pkey" PRIMARY KEY, btree (slug)
+    "topics_slug_unique" UNIQUE CONSTRAINT, btree (slug)
+Referenced by:
+    TABLE "articles" CONSTRAINT "articles_topic_foreign" FOREIGN KEY (topic) REFERENCES topics(slug)
+
+                         Table "public.users"
+   Column   |          Type          | Collation | Nullable | Default 
+------------+------------------------+-----------+----------+---------
+ username   | character varying(255) |           | not null | 
+ avatar_url | character varying(255) |           |          | 
+ name       | character varying(255) |           |          | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (username)
+    "users_username_unique" UNIQUE CONSTRAINT, btree (username)
+Referenced by:
+    TABLE "articles" CONSTRAINT "articles_author_foreign" FOREIGN KEY (author) REFERENCES users(username)
+    TABLE "comments" CONSTRAINT "comments_author_foreign" FOREIGN KEY (author) REFERENCES users(username)
+
+                                            Table "public.articles"
+   Column   |            Type             | Collation | Nullable |                   Default                    
+------------+-----------------------------+-----------+----------+----------------------------------------------
+ article_id | integer                     |           | not null | nextval('articles_article_id_seq'::regclass)
+ title      | character varying(255)      |           |          | 
+ body       | text                        |           |          | 
+ votes      | integer                     |           |          | 0
+ topic      | character varying(255)      |           |          | 
+ author     | character varying(255)      |           |          | 
+ created_at | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+Indexes:
+    "articles_pkey" PRIMARY KEY, btree (article_id)
+Foreign-key constraints:
+    "articles_author_foreign" FOREIGN KEY (author) REFERENCES users(username)
+    "articles_topic_foreign" FOREIGN KEY (topic) REFERENCES topics(slug)
+Referenced by:
+    TABLE "comments" CONSTRAINT "comments_article_id_foreign" FOREIGN KEY (article_id) REFERENCES articles(article_id)
+
+                                            Table "public.comments"
+   Column   |            Type             | Collation | Nullable |                   Default                    
+------------+-----------------------------+-----------+----------+----------------------------------------------
+ comment_id | integer                     |           | not null | nextval('comments_comment_id_seq'::regclass)
+ author     | character varying(255)      |           |          | 
+ article_id | integer                     |           |          | 
+ votes      | integer                     |           |          | 0
+ created_at | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ body       | text                        |           |          | 
+Indexes:
+    "comments_pkey" PRIMARY KEY, btree (comment_id)
+Foreign-key constraints:
+    "comments_article_id_foreign" FOREIGN KEY (article_id) REFERENCES articles(article_id)
+    "comments_author_foreign" FOREIGN KEY (author) REFERENCES users(username)
+
