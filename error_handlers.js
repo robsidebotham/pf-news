@@ -5,11 +5,12 @@ exports.send404 = (req, res, next) => {
 exports.handlePSQLErrors = (err, req, res, next) => {
   const { code } = err;
   const errLookup = {
-    "42P01": "Resource Not Found",
-    "42P02": "Resource Not Found",
+    "42P01": { statuscode: 404, msg: "Resource Not Found"},
+    "42P02": { statuscode: 404, msg: "Resource Not Found"},
+    "23503": { statuscode: 404, msg: "Resource Not Found"}
   };
   if (Object.keys(errLookup).includes(code)) {
-    res.status(code).send({ msg: errLookup[code] });
+    res.status(errLookup[code].statuscode).send({ msg: errLookup[code].msg });
   } else {
     next(err);
   }

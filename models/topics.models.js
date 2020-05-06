@@ -5,6 +5,9 @@ exports.fetchTopics = () => {
     .select("*")
     .from("topics")
     .then((topics) => {
+      if (topics.length === 0) {
+        return Promise.reject({ code: 404, msg: "Topics Not Found" });
+      }
       return { topics };
     });
 };
