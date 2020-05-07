@@ -9,6 +9,19 @@ afterAll(() => connection.destroy());
 
 describe("REQUESTS", () => {
   describe("/api", () => {
+    it("GET: (Status 200) returns an array of objects containing endpoint details.", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.endpoints)).toBe(true);
+          body.endpoints.forEach((endpoint) => {
+            expect(Object.keys(endpoint)).toEqual(
+              expect.arrayContaining(["method", "path", "description"])
+            );
+          });
+        });
+    });
     describe("/topics", () => {
       it("GET: (Status 200) returns an array of 'topic' objects.", () => {
         return request(app)
@@ -572,7 +585,7 @@ describe("REQUESTS", () => {
   });
 });
 describe("ERRORS", () => {
-  describe("/api", () => {
+  describe("/", () => {
     it("GET: (Status 404) Route does not exist.", () => {
       return request(app)
         .get("/api/badendpoint")
@@ -581,6 +594,8 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Resource Not Found");
         });
     });
+  })
+  describe("/api", () => {
     it("DELETE: (Status 405) Method not allowed.", () => {
       return request(app)
         .delete("/api")
@@ -642,7 +657,7 @@ describe("ERRORS", () => {
     });
   });
   describe("/api/articles/:article_id", () => {
-    it("GET: (Status 400) Article does not exist. ", () => {
+    it("GET: (Status 400) Article does not exist.", () => {
       return request(app)
         .get("/api/articles/1000")
         .expect(400)
@@ -658,7 +673,7 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    it("PATCH: (Status 404) Article does not exist. ", () => {
+    it("PATCH: (Status 404) Article does not exist.", () => {
       return request(app)
         .patch("/api/articles/1000")
         .send({ inc_votes: -10 })
@@ -780,7 +795,7 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    it("PATCH: (Status 400) Comment does not exist. ", () => {
+    it("PATCH: (Status 400) Comment does not exist.", () => {
       return request(app)
         .patch("/api/comments/1000")
         .send({ inc_votes: 10 })
