@@ -11,7 +11,7 @@ exports.postCommentByArticleId = (req, res, next) => {
   const { username, body } = req.body;
   addCommentByArticleId(article_id, username, body)
     .then((comment) => {
-      res.status(200).send(comment);
+      res.status(201).send(comment);
     })
     .catch(next);
 };
@@ -30,7 +30,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.patchCommentVotesById = (req, res, next) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
-  updateCommentVotesById(comment_id, inc_votes)
+  updateCommentVotesById(comment_id, inc_votes || 0)
     .then((comment) => {
       res.status(200).send(comment);
     })

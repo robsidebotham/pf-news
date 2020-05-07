@@ -2,12 +2,12 @@ const {
   topicData,
   articleData,
   commentData,
-  userData
+  userData,
 } = require("../data/index.js");
 
 const { formatDates, formatComments, makeRefObj } = require("../utils/utils");
 
-exports.seed = function(knex) {
+exports.seed = function (knex) {
   return knex.migrate
     .rollback()
     .then(() => {
@@ -23,10 +23,9 @@ exports.seed = function(knex) {
         .returning(["article_id", "title"])
         .insert(formatDates(articleData));
     })
-    .then(articleRows => {
-          const articleRef = makeRefObj(articleRows);
-          const formattedComments = formatComments(commentData, articleRef);
-          return knex("comments")
-            .insert(formattedComments);
+    .then((articleRows) => {
+      const articleRef = makeRefObj(articleRows);
+      const formattedComments = formatComments(commentData, articleRef);
+      return knex("comments").insert(formattedComments);
     });
 };

@@ -1,4 +1,3 @@
-
 exports.up = function (knex) {
   //console.log("Creating 'topics' table.");
   return knex.schema.createTable("topics", (topics) => {

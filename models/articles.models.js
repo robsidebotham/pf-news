@@ -10,12 +10,8 @@ exports.fetchArticleById = (article_id) => {
     .groupBy("articles.article_id")
     .then((articles) => {
       if (articles.length === 0) {
-        return Promise.reject({ code: 404, msg: "Article Not Found" });
+        return Promise.reject({ code: 400, msg: "Article Not Found" });
       }
-      corrArticles = articles.map(article => {
-        article.comment_count = parseInt(article.comment_count);
-        return article;
-      });
       return { article: articles[0] };
     });
 };
@@ -45,7 +41,14 @@ exports.fetchArticles = (sort_by, order, author, topic) => {
     }
   };
   return connection
-    .select("articles.article_id", "articles.title", "articles.votes", "articles.topic", "articles.author", "articles.created_at")
+    .select(
+      "articles.article_id",
+      "articles.title",
+      "articles.votes",
+      "articles.topic",
+      "articles.author",
+      "articles.created_at"
+    )
     .count("comments.article_id as comment_count")
     .from("articles")
     .leftJoin("comments", "articles.article_id", "comments.article_id")
@@ -55,12 +58,8 @@ exports.fetchArticles = (sort_by, order, author, topic) => {
     .orderBy(sort_by, order)
     .then((articles) => {
       if (articles.length === 0) {
-        return Promise.reject({ code: 404, msg: "Article Not Found" });
+        return { articles: [] };
       }
-      corrArticles = articles.map(article => {
-        article.comment_count = parseInt(article.comment_count);
-        return article;
-      });
-      return { articles: corrArticles };
+      return { articles: articles };
     });
 };
