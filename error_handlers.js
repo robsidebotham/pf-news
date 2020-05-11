@@ -5,7 +5,7 @@ exports.send404 = (req, res, next) => {
 exports.handlePSQLErrors = (err, req, res, next) => {
   const { code } = err;
   const errLookup = {
-    "23503": { statuscode: 400, msg: "Bad Request" },
+    "23503": { statuscode: 404, msg: "Bad Request" },
     "42703": { statuscode: 400, msg: "Bad Request" },
     "22P02": { statuscode: 400, msg: "Bad Request" },
     "23502": { statuscode: 400, msg: "Bad Request" },

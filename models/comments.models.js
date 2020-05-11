@@ -36,7 +36,7 @@ exports.updateCommentVotesById = (comment_id, inc_votes) => {
     .into("comments")
     .then((comments) => {
       if (comments.length === 0) {
-        return Promise.reject({ code: 400, msg: "Comment Not Found" });
+        return Promise.reject({ code: 404, msg: "Comment Not Found" });
       }
       return { comment: comments[0] };
     });
@@ -71,6 +71,6 @@ exports.removeCommentById = (comment_id) => {
           .del()
           .from("comments");
       }
-      return Promise.reject({ code: 404, msg: "Comment Not Found" });
+      return Promise.reject({ code: 400, msg: "Comment Not Found" });
     });
 };

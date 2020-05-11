@@ -646,6 +646,22 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
+    it("GET: (Status 404) Filtering by an invalid author name.", () => {
+      return request(app)
+        .get("/api/articles?author=not-an-author")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("User Not Found");
+        });
+    });
+    it("GET: (Status 404) Filtering by an invalid topic slug.", () => {
+      return request(app)
+        .get("/api/articles?topic=not-a-topic")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Topic Not Found");
+        });
+    });
     it("PATCH: (Status 405) Method not allowed.", () => {
       return request(app)
         .patch("/api/articles")
@@ -657,10 +673,10 @@ describe("ERRORS", () => {
     });
   });
   describe("/api/articles/:article_id", () => {
-    it("GET: (Status 400) Article does not exist.", () => {
+    it("GET: (Status 404) Article does not exist.", () => {
       return request(app)
         .get("/api/articles/1000")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Article Not Found");
         });
@@ -711,10 +727,10 @@ describe("ERRORS", () => {
     });
   });
   describe("/api/articles/:article_id/comments", () => {
-    it("GET: (Status 400) Article does not exist.", () => {
+    it("GET: (Status 404) Article does not exist.", () => {
       return request(app)
         .get("/api/articles/1000/comments")
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Article Not Found");
         });
@@ -738,11 +754,11 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    it("POST: (Status 400) Article does not exist.", () => {
+    it("POST: (Status 404) Article does not exist.", () => {
       return request(app)
         .post("/api/articles/1000/comments")
         .send({ username: "butter_bridge", body: "totally bored of gardening" })
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad Request");
         });
@@ -760,11 +776,11 @@ describe("ERRORS", () => {
     });
   });
   describe("/api/comments/:comment_id", () => {
-    it("PATCH: (Status 400) Comment does not exist.", () => {
+    it("PATCH: (Status 404) Comment does not exist.", () => {
       return request(app)
         .patch("/api/comments/1000")
         .send({ inc_votes: -10 })
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Comment Not Found");
         });
@@ -795,19 +811,19 @@ describe("ERRORS", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
-    it("PATCH: (Status 400) Comment does not exist.", () => {
+    it("PATCH: (Status 404) Comment does not exist.", () => {
       return request(app)
         .patch("/api/comments/1000")
         .send({ inc_votes: 10 })
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Comment Not Found");
         });
     });
-    it("DELETE (Status 404) Comment does not exist.", () => {
+    it("DELETE (Status 400) Comment does not exist.", () => {
       return request(app)
       .delete("/api/comments/1000")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Comment Not Found");
       });

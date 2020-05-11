@@ -10,7 +10,7 @@ exports.fetchArticleById = (article_id) => {
     .groupBy("articles.article_id")
     .then((articles) => {
       if (articles.length === 0) {
-        return Promise.reject({ code: 400, msg: "Article Not Found" });
+        return Promise.reject({ code: 404, msg: "Article Not Found" });
       }
       return { article: articles[0] };
     });
@@ -32,7 +32,7 @@ exports.updateArticleVotesById = (article_id, inc_votes) => {
 
 exports.fetchArticles = (sort_by, order, author, topic) => {
   const filterFunction = (query, field, value) => {
-    if (value !== "") {
+    if (value !== undefined) {
       if (field === "author") {
         query.where("articles.author", value);
       } else if (field === "topic") {

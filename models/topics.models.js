@@ -11,3 +11,17 @@ exports.fetchTopics = () => {
       return { topics };
     });
 };
+
+exports.fetchTopicBySlug = (slug) => {
+  return connection
+    .select("*")
+    .from("topics")
+    .where("slug", slug)
+    .then((topics) => {
+      if (topics.length === 0) {
+        return Promise.reject({ code: 404, msg: "Topic Not Found" });
+      }
+      return { topic: topics[0] };
+    });
+};
+
