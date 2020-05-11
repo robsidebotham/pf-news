@@ -1,3 +1,4 @@
 node_modules
 knexfile.js
 output.md
+heroku_log.txt
